@@ -26,5 +26,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run tests
-        run: ./gradlew testDebugUnitTest
+      - name: Run tests and coverage
+        run: ./gradlew koverXmlReportDebug
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./library/reports/kover/reportDebug.xml
+          flags: unit
+          name: codecov-unit
+          token: ${{ secrets.CODECOV }}
