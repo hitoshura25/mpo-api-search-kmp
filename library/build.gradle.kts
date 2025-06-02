@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.vmenon.mpo.user.api"
-version = "1.0.0"
+version = property("version")!!
 
 kotlin {
     jvm()
@@ -27,7 +27,7 @@ kotlin {
         }
     }
     js(IR) {
-        moduleName = "mpo-api-search-kmp"
+        moduleName = "@hitoshura25/mpo-api-search-kmp"
         browser {
             useCommonJs()
             commonWebpackConfig {
@@ -39,7 +39,7 @@ kotlin {
     }
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "mpo-api-search-kmp"
+        moduleName = "@hitoshura25/mpo-api-search-kmp"
         browser {
             useCommonJs()
             commonWebpackConfig {
