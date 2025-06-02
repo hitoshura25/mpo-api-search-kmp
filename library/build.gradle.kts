@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.vmenon.mpo.user.api"
-version = "0.0.1"
+version = property("version")!!
 
 kotlin {
     jvm()
