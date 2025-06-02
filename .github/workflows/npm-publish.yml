@@ -32,7 +32,7 @@ jobs:
 
       - name: Publish to GitHub Packages
         run: |
-          cd build/js/packages/mpo-api-search-kmp
+          cd build/js/packages/@hitoshura25/mpo-api-search-kmp
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
