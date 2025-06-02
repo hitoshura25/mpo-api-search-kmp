@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-and-publish:
+    needs: [ run-tests ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
