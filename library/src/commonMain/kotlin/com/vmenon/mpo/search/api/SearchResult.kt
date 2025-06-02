@@ -6,5 +6,4 @@ data class SearchResult(
     val genres: List<String>,
     val author: String,
     val feedUrl: String,
-    val description: String
 )
