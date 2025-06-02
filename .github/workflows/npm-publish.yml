@@ -2,7 +2,7 @@ name: Publish to GitHub Packages (npm)
 
 on:
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   build-and-publish:
@@ -20,11 +20,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-
-      - name: Build WASM
-        run: ./gradlew wasmJsBrowserProductionWebpack
+      - name: Build
+        run: ./gradlew jsBrowserProductionWebpack
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,6 +33,7 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           cd build/js/packages/mpo-api-search-kmp
+          npm ci
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
