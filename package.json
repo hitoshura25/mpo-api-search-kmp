@@ -1,0 +1,11 @@
+{
+  "name": "@hitoshura25/mpo-api-search-kmp",
+  "version": "1.0.0",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hitoshura25/mpo-api-search-kmp.git"
+  }
+}
