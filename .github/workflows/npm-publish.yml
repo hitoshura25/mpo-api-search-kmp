@@ -1,14 +1,11 @@
 name: Publish to GitHub Packages (npm)
 
 on:
-  push:
-    branches: [ main ]
   release:
     types: [ created ]
 
 jobs:
   build-and-publish:
-    needs: [ run-tests ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
