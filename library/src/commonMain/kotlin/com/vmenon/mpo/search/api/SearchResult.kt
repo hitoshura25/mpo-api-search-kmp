@@ -1,3 +1,5 @@
+package com.vmenon.mpo.search.api
+
 data class SearchResult(
     val name: String,
     val artworkUrl: String?,

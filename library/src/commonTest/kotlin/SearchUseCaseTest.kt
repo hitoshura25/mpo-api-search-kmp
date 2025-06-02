@@ -1,3 +1,5 @@
+package com.vmenon.mpo.search.api
+
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
