@@ -13,6 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.target_commitish }}
 
       - name: Extract version from tag
         id: extract_version
@@ -23,7 +25,6 @@ jobs:
       - name: Update gradle.properties
         run: |
           sed -i "s/^version=.*/version=${VERSION}/" gradle.properties
-          cat gradle.properties
 
       - name: Verify Changed files
         uses: tj-actions/verify-changed-files@v16
@@ -38,6 +39,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add gradle.properties
           git commit -m "Updated version in gradle.properties to ${VERSION}"
+          git push origin HEAD:${{ github.event.release.target_commitish }}
 
       - name: Set up JDK
         uses: actions/setup-java@v4
