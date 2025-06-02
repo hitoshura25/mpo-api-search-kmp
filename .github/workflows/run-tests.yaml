@@ -43,3 +43,4 @@ jobs:
           flags: unit
           name: codecov-unit
           token: ${{ secrets.CODECOV }}
+          fail_ci_if_error: true
