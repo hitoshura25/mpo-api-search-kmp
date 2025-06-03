@@ -1,15 +1,12 @@
-name: Run Tests
+name: Pull Request Tests and Coverage
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
 
 jobs:
-  test:
+  pull-request-run-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,9 +16,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v4
@@ -33,14 +27,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Run tests and coverage
-        run: ./gradlew koverXmlReportDebug
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./library/build/reports/kover/reportDebug.xml
-          flags: unit
-          name: codecov-unit
-          token: ${{ secrets.CODECOV }}
-          fail_ci_if_error: true
+      - uses: ./.github/actions/run-tests
