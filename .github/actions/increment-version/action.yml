@@ -51,13 +51,11 @@ runs:
               ;;
           esac
         
-          echo "new_version=${NEW_VERSION}"
-        
           # Update gradle.properties
           sed -i "s/^version=.*/version=${NEW_VERSION}/" ${{ inputs.gradle_properties_path }}
         
           # Set output
-          echo "${NEW_VERSION}" >> $GITHUB_OUTPUT
+          echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
         else
           echo "Invalid version format in gradle.properties"
           exit 1
