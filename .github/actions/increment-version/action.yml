@@ -1,0 +1,87 @@
+name: 'Increment Version'
+description: 'Increments version in gradle.properties including RC versions'
+inputs:
+  version_type:
+    description: 'Type of version increment (major, minor, patch, rc)'
+    required: true
+    default: 'patch'
+  gradle_properties_path:
+    description: 'Path to gradle.properties file'
+    required: false
+    default: 'gradle.properties'
+  github_push_token:
+    description: 'Github push token'
+    required: true
+outputs:
+  new_version:
+    description: 'The new version after increment'
+    value: ${{ steps.increment.outputs.new_version }}
+runs:
+  using: "composite"
+  steps:
+    - name: Increment version
+      id: increment
+      shell: bash
+      run: |
+        # Read current version from gradle.properties
+        CURRENT_VERSION=$(grep "^version=" ${{ inputs.gradle_properties_path }} | cut -d'=' -f2)
+        
+        # Split version into components
+        if [[ $CURRENT_VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(-rc\.([0-9]+))?$ ]]; then
+          MAJOR="${BASH_REMATCH[1]}"
+          MINOR="${BASH_REMATCH[2]}"
+          PATCH="${BASH_REMATCH[3]}"
+          RC="${BASH_REMATCH[5]:-0}"
+        
+          case "${{ inputs.version_type }}" in
+            "major")
+              NEW_VERSION="$((MAJOR + 1)).0.0"
+              ;;
+            "minor")
+              NEW_VERSION="${MAJOR}.$((MINOR + 1)).0"
+              ;;
+            "patch")
+              NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+              ;;
+            "rc")
+              if [ -z "${BASH_REMATCH[4]}" ]; then
+                # If not an RC, create first RC of next patch version
+                NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))-rc.1"
+              else
+                # If already an RC, increment RC number
+                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-rc.$((RC + 1))"
+              fi
+              ;;
+          esac
+        
+          # Update gradle.properties
+          sed -i "s/^version=.*/version=${NEW_VERSION}/" ${{ inputs.gradle_properties_path }}
+        
+          # Set output
+          echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+        else
+          echo "Invalid version format in gradle.properties"
+          exit 1
+        fi
+
+    - name: Verify Changed files
+      uses: tj-actions/verify-changed-files@v16
+      id: verify-changed-files
+      with:
+        files: ${{ inputs.gradle_properties_path }}
+
+    - name: Commit updated version
+      if: steps.verify-changed-files.outputs.files_changed == 'true'
+      shell: bash
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add ${{ inputs.gradle_properties_path }}
+        git commit -m "Updated version in gradle.properties to ${{ steps.increment.outputs.new_version }}"
+
+    - name: Push changes
+      if: steps.verify-changed-files.outputs.files_changed == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ inputs.github_push_token }}
+        branch: ${{ github.head_ref }}
