@@ -75,4 +75,9 @@ runs:
         git config --local user.name "github-actions[bot]"
         git add ${{ inputs.gradle_properties_path }}
         git commit -m "Updated version in gradle.properties to ${{ steps.increment.outputs.new_version }}"
-        git push origin HEAD:${{ github.ref_name }}
+
+    - name: Push changes
+      if: steps.verify-changed-files.outputs.files_changed == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        branch: ${{ github.head_ref }}
