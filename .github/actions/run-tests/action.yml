@@ -1,6 +1,10 @@
 # .github/actions/run-tests/action.yml
 name: 'Run Tests'
 description: 'Runs Gradle tests'
+inputs:
+  codecov_token:
+    description: 'Codecov token for uploading coverage reports'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -14,5 +18,5 @@ runs:
         files: ./library/build/reports/kover/reportDebug.xml
         flags: unit
         name: codecov-unit
-        token: ${{ secrets.CODECOV }}
+        token: ${{ inputs.codecov_token }}
         fail_ci_if_error: true

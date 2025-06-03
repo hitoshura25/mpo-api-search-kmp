@@ -28,3 +28,5 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - uses: ./.github/actions/run-tests
+        with:
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
