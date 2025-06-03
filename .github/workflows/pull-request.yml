@@ -32,3 +32,4 @@ jobs:
       - uses: ./.github/actions/increment-version
         with:
           version_type: 'rc'
+          github_push_token: ${{ steps.app-token.outputs.token }}
