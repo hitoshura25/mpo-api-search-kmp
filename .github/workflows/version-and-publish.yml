@@ -12,8 +12,15 @@ jobs:
       packages: write
 
     steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID_GITHUB }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY_GITHUB }}
+
       - uses: actions/checkout@v4
         with:
+          token: ${{ steps.app-token.outputs.token }}
           ref: ${{ github.event.release.target_commitish }}
 
       - name: Extract version from tag
