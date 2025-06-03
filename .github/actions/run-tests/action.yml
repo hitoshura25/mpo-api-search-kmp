@@ -18,8 +18,6 @@ runs:
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
-      env:
-        CODECOV_TOKEN: ${{ inputs.codecov_token }}
       with:
         files: ./library/build/reports/kover/reportDebug.xml
         flags: unit
