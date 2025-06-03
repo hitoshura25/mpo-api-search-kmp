@@ -15,7 +15,7 @@ jobs:
     needs: checkout
     uses: ./.github/workflows/setup-jdk.yml
 
-  cach-gradle:
+  cache-gradle:
     needs: setup-jdk
     uses: ./.github/workflows/cache-gradle.yml
 
