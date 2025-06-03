@@ -10,15 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-  setup-jdk:
-    needs: checkout
-    uses: ./.github/workflows/setup-jdk.yml
-
-  cache-gradle:
-    needs: setup-jdk
-    uses: ./.github/workflows/cache-gradle.yml
-
-  run-tests:
-    needs: cache-gradle
-    uses: ./.github/workflows/run-tests.yml
+      - uses: ./.github/actions/setup-jdk
+      - uses: ./.github/actions/cache-gradle
+      - uses: ./.github/actions/run-tests

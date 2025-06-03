@@ -1,0 +1,13 @@
+# .github/actions/publish-npm-package/action.yml
+name: 'Publish NPM Package'
+description: 'Publishes the NPM package'
+runs:
+  using: "composite"
+  steps:
+    - name: Publish to GitHub Packages
+      shell: bash
+      run: |
+        cd build/js/packages/@hitoshura25/mpo-api-search-kmp
+        npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

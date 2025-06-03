@@ -1,0 +1,12 @@
+# .github/actions/build-js/action.yml
+name: 'Build JS'
+description: 'Builds the JavaScript target using Gradle'
+runs:
+  using: "composite"
+  steps:
+    - name: Grant execute permission for gradlew
+      shell: bash
+      run: chmod +x gradlew
+    - name: Build JS
+      shell: bash
+      run: ./gradlew jsBrowserProductionWebpack

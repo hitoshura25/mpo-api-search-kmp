@@ -1,0 +1,19 @@
+# .github/actions/run-tests/action.yml
+name: 'Run Tests'
+description: 'Runs Gradle tests'
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - name: Grant execute permission for gradlew
+      shell: bash
+      run: chmod +x gradlew
+    - name: Run Tests
+      shell: bash
+      run: ./gradlew check
