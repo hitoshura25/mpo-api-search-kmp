@@ -5,6 +5,10 @@ inputs:
   codecov_token:
     description: 'Codecov token for uploading coverage reports'
     required: true
+  test_input:
+    description: 'Test input for the tests'
+    required: true
+    default: 'test'
 runs:
   using: "composite"
   steps:

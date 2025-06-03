@@ -30,3 +30,4 @@ jobs:
       - uses: ./.github/actions/run-tests
         with:
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
+          test_input: 'my_test'
