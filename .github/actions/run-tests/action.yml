@@ -4,16 +4,15 @@ description: 'Runs Gradle tests'
 runs:
   using: "composite"
   steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Set up JDK
-      uses: actions/setup-java@v4
+    - name: Run tests and coverage
+      shell: bash
+      run: ./gradlew koverXmlReportDebug
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
       with:
-        java-version: '17'
-        distribution: 'temurin'
-    - name: Grant execute permission for gradlew
-      shell: bash
-      run: chmod +x gradlew
-    - name: Run Tests
-      shell: bash
-      run: ./gradlew check
+        files: ./library/build/reports/kover/reportDebug.xml
+        flags: unit
+        name: codecov-unit
+        token: ${{ secrets.CODECOV }}
+        fail_ci_if_error: true
