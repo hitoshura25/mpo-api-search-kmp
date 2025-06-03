@@ -48,25 +48,10 @@ jobs:
           git commit -m "Updated version in gradle.properties to ${VERSION}"
           git push origin HEAD:${{ github.event.release.target_commitish }}
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: ./.github/actions/setup-jdk
+      - uses: ./.github/actions/cache-gradle
+      - uses: ./.github/actions/build-js
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/publish-npm-package
         with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Build
-        run: ./gradlew jsBrowserProductionWebpack
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@hitoshura25'
-
-      - name: Publish to GitHub Packages
-        run: |
-          cd build/js/packages/@hitoshura25/mpo-api-search-kmp
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          publish_auth_token: ${{ secrets.GITHUB_TOKEN }}
