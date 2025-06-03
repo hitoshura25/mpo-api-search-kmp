@@ -1,0 +1,11 @@
+name: Build JS Target
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: ./gradlew jsBrowserProductionWebpack

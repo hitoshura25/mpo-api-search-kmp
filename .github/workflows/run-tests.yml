@@ -1,0 +1,20 @@
+name: Run Tests
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests and coverage
+        run: ./gradlew koverXmlReportDebug
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./library/build/reports/kover/reportDebug.xml
+          flags: unit
+          name: codecov-unit
+          token: ${{ secrets.CODECOV }}
+          fail_ci_if_error: true
