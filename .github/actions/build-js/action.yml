@@ -1,0 +1,9 @@
+# .github/actions/build-js/action.yml
+name: 'Build JS'
+description: 'Builds the JavaScript target using Gradle'
+runs:
+  using: "composite"
+  steps:
+    - name: Build JS
+      shell: bash
+      run: ./gradlew jsBrowserProductionWebpack

@@ -9,9 +9,26 @@ jobs:
   pull-request-run-tests:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID_GITHUB }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY_GITHUB }}
+
       - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
       - uses: ./.github/actions/setup-jdk
       - uses: ./.github/actions/cache-gradle
       - uses: ./.github/actions/run-tests
         with:
           codecov_token: ${{ secrets.CODECOV }}
+      - uses: ./.github/actions/build-js
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/publish-npm-package
+        with:
+          publish_auth_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: ./.github/actions/increment-version
+        with:
+          version_type: 'rc'
