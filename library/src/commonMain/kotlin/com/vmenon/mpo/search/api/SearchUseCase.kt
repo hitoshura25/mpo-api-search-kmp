@@ -1,5 +1,11 @@
 package com.vmenon.mpo.search.api
 
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+
 class SearchUseCase {
     suspend fun search(query: String): List<SearchResult> {
         if (query.isBlank()) {
