@@ -1,6 +1,12 @@
 package com.vmenon.mpo.search.api
 
+import com.vmenon.mpo.search.api.internal.SearchApiDataSource
+import com.vmenon.mpo.search.api.internal.SearchCacheDataSource
+
 class SearchUseCase {
+    private val apiDataSource = SearchApiDataSource()
+    private val cacheDataSource = SearchCacheDataSource()
+
     suspend fun search(query: String): List<SearchResult> {
         if (query.isBlank()) {
             return emptyList()
