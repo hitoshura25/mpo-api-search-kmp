@@ -1,6 +1,5 @@
 import {SearchApi} from '@hitoshura25/mpo-api-search-kmp'
 
-
 async function init_app() {
   const searchButton = document.getElementById('searchButton');
   searchButton?.addEventListener('click', search);
