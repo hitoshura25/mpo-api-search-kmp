@@ -18,6 +18,7 @@ group = "com.vmenon.mpo.user.api"
 version = property("version")!!
 
 kotlin {
+    val myModuleName = "@hitoshura25/mpo-api-search-kmp"
     jvm()
     androidTarget {
         publishLibraryVariants("release")
@@ -27,9 +28,9 @@ kotlin {
         }
     }
     js(IR) {
-        moduleName = "@hitoshura25/mpo-api-search-kmp"
+        moduleName = myModuleName
+        useEsModules()
         browser {
-            useCommonJs()
             testTask {
                 useKarma {
                     useChromeHeadless()
@@ -38,12 +39,19 @@ kotlin {
         }
         binaries.executable()
         generateTypeScriptDefinitions()
+        compilations["main"].packageJson {
+            types = "kotlin/${myModuleName}.d.ts"
+        }
     }
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "@hitoshura25/mpo-api-search-kmp"
+        moduleName = myModuleName
         browser {
-            useCommonJs()
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
         }
         binaries.executable()
         generateTypeScriptDefinitions()

@@ -9,7 +9,7 @@
     "test:e2e": "playwright test",
     "test:e2e-ui": "playwright test --ui",
     "start": "webpack serve --mode development",
-    "prestart": "npm run copy-lib"
+    "prestart": "npm link ../build/js/packages/@hitoshura25/mpo-api-search-kmp"
   },
   "author": "Vinayak Menon",
   "license": "ISC",
