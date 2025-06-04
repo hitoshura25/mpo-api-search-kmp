@@ -1,0 +1,19 @@
+name: 'Run JS E2E Tests'
+description: 'Runs JavaScript E2E tests using Playwright'
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies
+      working-directory: e2e
+      shell: bash
+      run: npm ci
+
+    - name: Install Playwright Browsers
+      working-directory: e2e
+      shell: bash
+      run: npx playwright install --with-deps
+
+    - name: Run Playwright tests
+      working-directory: e2e
+      shell: bash
+      run: npm run test:e2e
