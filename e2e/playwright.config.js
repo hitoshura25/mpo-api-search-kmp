@@ -10,6 +10,10 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:8080',
     trace: 'retain-on-failure',
-    testIdAttribute: 'data-testid'
-  }
+    testIdAttribute: 'data-testid',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'retain-on-failure'
+  },
+  outputDir: 'test-results'
 });

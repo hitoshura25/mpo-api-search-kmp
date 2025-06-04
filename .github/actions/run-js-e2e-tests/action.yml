@@ -17,3 +17,12 @@ runs:
       working-directory: e2e
       shell: bash
       run: npm run test:e2e
+
+    - uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: playwright-report
+        path: |
+          e2e/test-results/
+          e2e/playwright-report/
+        retention-days: 30

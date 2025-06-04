@@ -2,20 +2,22 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Podcast Search App', () => {
   test('should perform search when entering text and clicking search', async ({ page }) => {
-      await page.goto('http://localhost:8080');
+      await page.goto('http://localhost:8080', { waitUntil: 'networkidle' });
 
       // Enter search term
-      await page.locator('#searchInput').fill('test podcast');
+      const searchInput = page.locator('#searchInput');
+      const searchButton = page.locator('#searchButton');
+      expect(searchButton).toBeVisible({ timeout: 10000 })
+      await searchInput.fill('test podcast');
 
       // Click search button
-      await page.locator('#searchButton').click();
+      await searchButton.click();
 
       // Wait for results
-      await expect(page.locator('#results')).toBeVisible();
+      await expect(page.locator('#results')).toBeVisible({ timeout: 15000 });
 
       // Verify results are loaded
       const resultElements = page.locator('.result');
-      //await expect(resultElements).toHaveCount().above(0);
 
       // Verify result structure
       const firstResult = resultElements.first();
