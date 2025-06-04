@@ -1,6 +1,8 @@
 @file:OptIn(ExperimentalDistributionDsl::class)
 
 import com.vanniktech.maven.publish.SonatypeHost
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -17,6 +19,8 @@ plugins {
 group = "com.vmenon.mpo.user.api"
 version = property("version")!!
 
+val myModuleName = "@hitoshura25/mpo-api-search-kmp"
+
 kotlin {
     jvm()
     androidTarget {
@@ -27,12 +31,9 @@ kotlin {
         }
     }
     js(IR) {
-        moduleName = "@hitoshura25/mpo-api-search-kmp"
+        moduleName = myModuleName
+        useEsModules()
         browser {
-            useCommonJs()
-            commonWebpackConfig {
-                outputFileName = "mpo-api-search-kmp.js"
-            }
             testTask {
                 useKarma {
                     useChromeHeadless()
@@ -41,14 +42,19 @@ kotlin {
         }
         binaries.executable()
         generateTypeScriptDefinitions()
+        val typesFile = "kotlin/${myModuleName}.d.ts"
+        compilations["main"].packageJson {
+            types = typesFile
+        }
     }
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "@hitoshura25/mpo-api-search-kmp"
+        moduleName = myModuleName
         browser {
-            useCommonJs()
-            commonWebpackConfig {
-                outputFileName = "mpo-api-search-kmp.js"
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
             }
         }
         binaries.executable()
@@ -127,4 +133,32 @@ mavenPublishing {
             developerConnection = "ZZZ"
         }
     }
+}
+
+tasks {
+    // This is a hack unfortunately as the types file entry above does not seem to always stick when getting generated
+    val checkPackageJson = register("checkPackageJson") {
+        inputs.property("jsonFile", rootProject.file("build/js/packages/$myModuleName/package.json"))
+        inputs.property("moduleName", myModuleName)
+        doLast {
+            val packageJsonFile = inputs.properties["jsonFile"] as File
+            val moduleName = inputs.properties["moduleName"] as String
+            println("Checking package.json file: $packageJsonFile")
+            if (packageJsonFile.exists()) {
+                @Suppress("UNCHECKED_CAST")
+                val packageJson = JsonSlurper().parse(packageJsonFile) as MutableMap<String, Any>
+                if (!packageJson.contains("types")) {
+                    packageJson["types"] = "kotlin/$moduleName.d.ts"
+                    val formattedJson = JsonOutput.prettyPrint(JsonOutput.toJson(packageJson))
+                    packageJsonFile.writeText(formattedJson)
+                    println("package.json updated with the correct types entry.")
+                } else {
+                    println("package.json contains the correct types entry.")
+                }
+            } else {
+                throw GradleException("package.json file $packageJsonFile not found.")
+            }
+        }
+    }
+    named("jsBrowserProductionWebpack").configure { finalizedBy(checkPackageJson) }
 }

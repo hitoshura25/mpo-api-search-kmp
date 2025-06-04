@@ -1,3 +1,5 @@
+name: Prepare Next Release Candidate
+
 on:
   workflow_run:
     workflows: [ "Release" ]

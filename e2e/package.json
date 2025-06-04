@@ -1,0 +1,29 @@
+{
+  "name": "mpo-search-api-kmp-js-e2e",
+  "version": "0.1.0",
+  "description": "Test app to run e2e tests for the JS library",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf node_modules",
+    "test:e2e": "playwright test",
+    "test:e2e-ui": "playwright test --ui",
+    "start": "webpack serve --mode development",
+    "prestart": "npm link ../build/js/packages/@hitoshura25/mpo-api-search-kmp"
+  },
+  "author": "Vinayak Menon",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.21",
+    "copy-webpack-plugin": "^11.0.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "html-webpack-plugin": "^5.5.0",
+    "jsonwebtoken": "^9.0.2",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1"
+  }
+}

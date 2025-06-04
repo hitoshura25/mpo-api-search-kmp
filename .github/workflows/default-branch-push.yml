@@ -27,6 +27,7 @@ jobs:
           codecov_token: ${{ secrets.CODECOV }}
       - uses: ./.github/actions/build-js
       - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/run-js-e2e-tests
       - uses: ./.github/actions/publish-npm-package
         with:
           publish_auth_token: ${{ secrets.GITHUB_TOKEN }}
