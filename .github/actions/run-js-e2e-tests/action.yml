@@ -32,4 +32,4 @@ runs:
         name: playwright-report
         path: |
           e2e/
-        retention-days: 30
+        retention-days: 7

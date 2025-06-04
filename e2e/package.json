@@ -4,7 +4,6 @@
   "description": "Test app to run e2e tests for the JS library",
   "main": "index.js",
   "scripts": {
-    "copy-lib": "mkdir -p node_modules && cp -R ../build/js/packages/@hitoshura25 node_modules/",
     "clean": "rm -rf node_modules",
     "test:e2e": "playwright test",
     "test:e2e-ui": "playwright test --ui",
@@ -16,7 +15,6 @@
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.21",
-    "concurrently": "^9.1.2",
     "copy-webpack-plugin": "^11.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",

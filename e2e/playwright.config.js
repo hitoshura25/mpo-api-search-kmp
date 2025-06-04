@@ -12,7 +12,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
     testIdAttribute: 'data-testid',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: 'on',
     trace: 'retain-on-failure'
   },
   outputDir: 'test-results'
