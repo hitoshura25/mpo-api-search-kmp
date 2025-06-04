@@ -31,5 +31,5 @@ runs:
       with:
         name: playwright-report
         path: |
-          e2e/
+          e2e/test-results
         retention-days: 7
