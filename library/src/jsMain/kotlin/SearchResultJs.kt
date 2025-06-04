@@ -1,6 +1,7 @@
-package com.vmenon.mpo.search.api
-
-data class SearchResult(
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+@JsName("SearchResult")
+data class SearchResultJs(
     val name: String,
     val artworkUrl: String?,
     val genres: List<String>,

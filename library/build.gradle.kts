@@ -30,9 +30,6 @@ kotlin {
         moduleName = "@hitoshura25/mpo-api-search-kmp"
         browser {
             useCommonJs()
-            commonWebpackConfig {
-                outputFileName = "mpo-api-search-kmp.js"
-            }
             testTask {
                 useKarma {
                     useChromeHeadless()
@@ -47,9 +44,6 @@ kotlin {
         moduleName = "@hitoshura25/mpo-api-search-kmp"
         browser {
             useCommonJs()
-            commonWebpackConfig {
-                outputFileName = "mpo-api-search-kmp.js"
-            }
         }
         binaries.executable()
         generateTypeScriptDefinitions()
