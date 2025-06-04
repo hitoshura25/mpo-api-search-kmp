@@ -14,6 +14,8 @@ plugins {
     alias(libs.plugins.vanniktech.mavenPublish)
     alias(libs.plugins.kover)
     alias(libs.plugins.kotest.multiplatform)
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.sqldelight)
 }
 
 group = "com.vmenon.mpo.user.api"
@@ -63,28 +65,33 @@ kotlin {
     linuxX64()
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.serialization.json)
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(libs.kotlin.test)
-                implementation(libs.kotlinx.coroutines.test)
-                implementation(libs.kotest.assertions.core)
-                implementation(libs.kotest.property)
-                implementation(libs.kotest.framework.engine)
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-            }
+        commonMain.dependencies {
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.sqldelight.runtime)
+            implementation(libs.koin.core)
         }
 
-        val jvmTest by getting {
-            dependencies {
-                implementation(libs.kotest.runner.junit5)
-            }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.kotest.assertions.core)
+            implementation(libs.kotest.property)
+            implementation(libs.kotest.framework.engine)
+            implementation(kotlin("test-common"))
+            implementation(kotlin("test-annotations-common"))
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.android)
+            implementation(libs.sqldelight.android.driver)
         }
     }
 }
