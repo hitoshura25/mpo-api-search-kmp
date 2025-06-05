@@ -1,6 +1,6 @@
 import com.vmenon.mpo.search.api.SearchResult
-import com.vmenon.mpo.search.api.SearchUseCase
 import com.vmenon.mpo.search.api.internal.IsolatedKoinContext
+import com.vmenon.mpo.search.api.internal.SearchUseCase
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.js.JsClient
 import kotlin.js.Promise

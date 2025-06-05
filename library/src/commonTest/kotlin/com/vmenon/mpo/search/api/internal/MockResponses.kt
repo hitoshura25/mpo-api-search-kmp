@@ -1,4 +1,4 @@
-package com.vmenon.mpo.search.api
+package com.vmenon.mpo.search.api.internal
 
 object MockResponses {
     val SEARCH_RESPONSE = """
