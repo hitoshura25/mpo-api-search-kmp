@@ -1,16 +1,32 @@
-import com.vmenon.mpo.search.api.SearchUseCase
+import com.vmenon.mpo.search.api.SearchApiConfiguration
+import com.vmenon.mpo.search.api.SearchResult
+import com.vmenon.mpo.search.api.internal.IsolatedKoinContext
+import com.vmenon.mpo.search.api.internal.SearchUseCase
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.js.JsClient
+import kotlin.js.Promise
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.js.Promise
+import org.koin.dsl.module
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 @JsName("SearchApi")
-class SearchApiJs {
+class SearchApiJs(configuration: SearchApiConfiguration) {
+    init {
+        IsolatedKoinContext.koinApp.koin.loadModules(
+            listOf(
+                module {
+                    single<HttpClientEngine> { JsClient().create { } }
+                    single<SearchApiConfiguration> { configuration }
+                }
+            ))
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     @JsName("searchPodcasts")
-    fun searchPodcasts(query: String): Promise<Array<SearchResultJs>> {
+    fun searchPodcasts(query: String): Promise<Array<SearchResult>> {
         return Promise { resolve, reject ->
             if (query.isBlank()) {
                 resolve(emptyArray())
@@ -18,15 +34,7 @@ class SearchApiJs {
                 GlobalScope.launch {
                     try {
                         val results = SearchUseCase().search(query)
-                        resolve(results.map { result ->
-                            SearchResultJs(
-                                name = result.name,
-                                artworkUrl = result.artworkUrl,
-                                genres = result.genres,
-                                author = result.author,
-                                feedUrl = result.feedUrl
-                            )
-                        }.toTypedArray())
+                        resolve(results.toTypedArray())
                     } catch (e: Exception) {
                         reject(e)
                     }

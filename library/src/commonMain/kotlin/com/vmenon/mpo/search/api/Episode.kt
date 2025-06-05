@@ -5,12 +5,14 @@ import kotlin.js.JsExport
 import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalJsExport::class)
-@Serializable
 @JsExport
-data class SearchResult(
+@Serializable
+data class Episode(
     val name: String,
-    val artworkUrl: String?,
-    val genres: List<String>,
-    val author: String,
-    val feedUrl: String,
+    val description: String?,
+    val published: Double,
+    val type: String,
+    val downloadUrl: String,
+    val length: Double?,
+    val artworkUrl: String?
 )

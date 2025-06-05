@@ -7,10 +7,7 @@ import kotlinx.serialization.Serializable
 @OptIn(ExperimentalJsExport::class)
 @Serializable
 @JsExport
-data class SearchResult(
-    val name: String,
-    val artworkUrl: String?,
-    val genres: List<String>,
-    val author: String,
-    val feedUrl: String,
+data class SearchResultDetails(
+    val episodes: List<Episode>,
+    val subscribed: Boolean
 )

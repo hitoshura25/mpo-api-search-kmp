@@ -1,6 +1,21 @@
 import { test, expect } from '@playwright/test';
+import { AddressInfo } from 'net';
+import { setupMockServer } from './mocks/mock-server';
 
 test.describe('Podcast Search App', () => {
+  let mockServer: any;
+  let mockServerPort: number;
+
+  test.beforeAll(async () => {
+    mockServer = await setupMockServer({
+      port: 3306
+    });
+    mockServerPort = (mockServer.address() as AddressInfo).port;
+  });
+
+  test.afterAll(async () => {
+    mockServer.close();
+  });
   test('should perform search when entering text and clicking search', async ({ page }) => {
       await page.goto('http://localhost:8080', { waitUntil: 'networkidle' });
 
