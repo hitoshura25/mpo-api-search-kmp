@@ -3,10 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src/index.ts'),
+  entry: path.resolve(__dirname, './public/ts/index.ts'),
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].bundle.js'
+    filename: 'js/[name].bundle.js'
   },
   module: {
     rules: [
@@ -23,8 +23,10 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'index.html'
-    })
+      template: './public/index.html',
+      filename: 'index.html',
+      chunks: ['main']
+    }),
   ],
   devServer: {
     static: {
