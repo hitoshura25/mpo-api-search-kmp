@@ -1,5 +1,8 @@
 package com.vmenon.mpo.search.api
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Episode(
     val name: String,
     val description: String?,

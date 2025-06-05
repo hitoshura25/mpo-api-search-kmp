@@ -1,10 +1,43 @@
 package com.vmenon.mpo.search.api
 
+import com.vmenon.mpo.search.api.internal.IsolatedKoinContext
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.test.runTest
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
+import io.ktor.utils.io.ByteReadChannel
+import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
+import org.koin.core.Koin
+import org.koin.dsl.module
+import org.koin.test.KoinTest
 
-class SearchUseCaseTest {
+class SearchUseCaseTest : KoinTest {
+    override fun getKoin(): Koin = IsolatedKoinContext.koin
+
+    @BeforeTest
+    fun setup() {
+        getKoin().loadModules(
+            listOf(
+                module {
+                    single<HttpClientEngine> {
+                        MockEngine { request ->
+                            respond(
+                                content = ByteReadChannel(MockResponses.SEARCH_RESPONSE),
+                                status = HttpStatusCode.OK,
+                                headers = headersOf(HttpHeaders.ContentType, "application/json")
+                            )
+                        }
+                    }
+                }
+            )
+        )
+    }
+
     @Test
     fun `search returns empty list when query is empty`() = runTest {
         val searchUseCase = SearchUseCase()
