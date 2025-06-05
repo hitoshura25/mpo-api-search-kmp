@@ -70,7 +70,6 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.cio)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.sqldelight.runtime)
             implementation(libs.koin.core)
@@ -88,6 +87,10 @@ kotlin {
             implementation(kotlin("test-annotations-common"))
         }
 
+
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.cio)
+        }
         jvmTest.dependencies {
             implementation(libs.kotest.runner.junit5)
             implementation(libs.koin.test.junit5)
@@ -96,6 +99,11 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
             implementation(libs.sqldelight.android.driver)
+        }
+
+        jsMain.dependencies {
+            implementation(libs.ktor.client.js)
+            implementation(libs.sqldelight.js.driver)
         }
     }
 }
