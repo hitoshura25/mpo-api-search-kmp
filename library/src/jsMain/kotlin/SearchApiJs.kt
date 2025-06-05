@@ -1,3 +1,4 @@
+import com.vmenon.mpo.search.api.SearchApiConfiguration
 import com.vmenon.mpo.search.api.SearchResult
 import com.vmenon.mpo.search.api.internal.IsolatedKoinContext
 import com.vmenon.mpo.search.api.internal.SearchUseCase
@@ -12,12 +13,13 @@ import org.koin.dsl.module
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 @JsName("SearchApi")
-class SearchApiJs {
+class SearchApiJs(configuration: SearchApiConfiguration) {
     init {
         IsolatedKoinContext.koinApp.koin.loadModules(
             listOf(
                 module {
                     single<HttpClientEngine> { JsClient().create { } }
+                    single<SearchApiConfiguration> { configuration }
                 }
             ))
     }

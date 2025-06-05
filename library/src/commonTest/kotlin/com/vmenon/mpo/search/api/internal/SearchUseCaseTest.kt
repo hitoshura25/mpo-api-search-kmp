@@ -1,5 +1,6 @@
 package com.vmenon.mpo.search.api.internal
 
+import com.vmenon.mpo.search.api.SearchApiConfiguration
 import com.vmenon.mpo.search.api.SearchResult
 import io.kotest.matchers.shouldBe
 import io.ktor.client.engine.HttpClientEngine
@@ -32,6 +33,9 @@ class SearchUseCaseTest : KoinTest {
                                 headers = headersOf(HttpHeaders.ContentType, "application/json")
                             )
                         }
+                    }
+                    single<SearchApiConfiguration> {
+                        SearchApiConfiguration(baseUrl = "http://localhost:8080")
                     }
                 }
             )
