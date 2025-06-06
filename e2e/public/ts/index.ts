@@ -8,7 +8,7 @@ async function init_app() {
 async function search() {
     const searchInput = document.getElementById('searchInput') as HTMLInputElement;
     const query = searchInput?.value;
-    const searchApi = new SearchApi(new SearchApiConfiguration('http://localhost:3306'));
+    const searchApi = new SearchApi(new SearchApiConfiguration('http://localhost:3306', 300000));
     try {
         const results = await searchApi.searchPodcasts(query);
         const resultsDiv = document.getElementById('results') as HTMLDivElement;

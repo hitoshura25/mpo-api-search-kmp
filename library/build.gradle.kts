@@ -62,12 +62,12 @@ kotlin {
         binaries.executable()
         generateTypeScriptDefinitions()
     }
-    linuxX64()
 
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -90,6 +90,7 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
+            implementation(libs.sqldelight.sqlite.driver)
         }
         jvmTest.dependencies {
             implementation(libs.kotest.runner.junit5)
@@ -100,10 +101,23 @@ kotlin {
             implementation(libs.ktor.client.android)
             implementation(libs.sqldelight.android.driver)
         }
+        
+        androidUnitTest.dependencies {
+            implementation(libs.sqldelight.sqlite.driver)
+        }
 
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
             implementation(libs.sqldelight.js.driver)
+            implementation(npm("sql.js", "1.6.2"))
+            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+        }
+
+        wasmJsMain.dependencies {
+            implementation(libs.ktor.client.js)
+            implementation(libs.sqldelight.js.driver)
+            implementation(npm("sql.js", "1.6.2"))
+            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
         }
     }
 }
@@ -180,4 +194,13 @@ tasks {
         }
     }
     named("jsBrowserProductionWebpack").configure { finalizedBy(checkPackageJson) }
+}
+
+sqldelight {
+    databases {
+        create("MpoDatabase") {
+            packageName.set("com.vmenon.mpo.cache")
+            generateAsync.set(true)
+        }
+    }
 }
