@@ -38,7 +38,7 @@ class SearchUseCaseTest : KoinTest {
                         SearchApiConfiguration(baseUrl = "http://localhost:8080", cacheTimeMilliseconds = 5 * 60 * 1000)
                     }
                     single<DatabaseDriverFactory> {
-                        TestDatabaseDriverFactory()
+                        createTestSqlDriverFactory()
                     }
                 }
             )
