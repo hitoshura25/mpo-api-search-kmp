@@ -6,7 +6,7 @@ import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import java.util.Properties
 
-class JdbcDatabaseDriverFactory : DatabaseDriverFactory {
+class JdbcDatabaseDriverFactory : SqlDriverFactory {
     override suspend fun provideDbDriver(
         schema: SqlSchema<QueryResult.AsyncValue<Unit>>
     ): SqlDriver {

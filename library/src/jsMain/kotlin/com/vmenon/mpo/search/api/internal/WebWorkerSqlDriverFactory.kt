@@ -6,7 +6,7 @@ import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.worker.WebWorkerDriver
 import app.cash.sqldelight.driver.worker.expected.Worker
 
-class JsDatabaseDriverFactory : DatabaseDriverFactory {
+class WebWorkerSqlDriverFactory : SqlDriverFactory {
     override suspend fun provideDbDriver(
         schema: SqlSchema<QueryResult.AsyncValue<Unit>>
     ): SqlDriver {

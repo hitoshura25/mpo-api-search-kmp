@@ -11,7 +11,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.minus
 
 internal class SearchCacheDataSource(
-    private val databaseDriverFactory: DatabaseDriverFactory,
+    private val databaseDriverFactory: SqlDriverFactory,
     private val configuration: SearchApiConfiguration
 ) {
     private val searchResultsAdapter = object : ColumnAdapter<Instant, Long> {
