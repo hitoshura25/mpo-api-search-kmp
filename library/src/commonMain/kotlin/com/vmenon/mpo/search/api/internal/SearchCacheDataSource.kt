@@ -2,7 +2,6 @@ package com.vmenon.mpo.search.api.internal
 
 import app.cash.sqldelight.ColumnAdapter
 import com.vmenon.mpo.cache.MpoDatabase
-import com.vmenon.mpo.cache.SearchResults
 import com.vmenon.mpo.cache.SearchResults.Adapter
 import com.vmenon.mpo.search.api.SearchApiConfiguration
 import kotlinx.datetime.Clock
@@ -26,16 +25,16 @@ internal class SearchCacheDataSource(
     private var database: MpoDatabase? = null
 
     private suspend fun <T> setupDatabase(block: suspend (MpoDatabase) -> T): T {
-        if (database == null) {
-            database = MpoDatabase(
+        val db = database ?: run {
+            MpoDatabase(
                 databaseDriverFactory.provideDbDriver(MpoDatabase.Schema),
                 Adapter(created_atAdapter = searchResultsAdapter)
-            )
+            ).also { database = it }
         }
-        return database?.let { block(it) } ?: throw IllegalStateException("Database not initialized")
+        return block(db)
     }
 
-    suspend fun loadSearchResults(keyword: String): SearchResults? {
+    suspend fun loadSearchResults(keyword: String): String? {
         return setupDatabase { database ->
             val now = Clock.System.now()
             database.mpoDatabaseQueries.selectSearchResults(
@@ -45,7 +44,16 @@ internal class SearchCacheDataSource(
                     DateTimeUnit.MILLISECOND
                 ),
                 now
-            ).executeAsOneOrNull()
+            ).executeAsOneOrNull()?.results
+        }
+    }
+
+    suspend fun saveSearchResults(keyword: String, results: String) {
+        setupDatabase { database ->
+            database.mpoDatabaseQueries.insertSearchResults(
+                keyword,
+                results
+            )
         }
     }
 }
