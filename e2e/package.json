@@ -8,13 +8,15 @@
     "test:e2e": "playwright test",
     "test:e2e-ui": "playwright test --ui",
     "start": "webpack serve --mode development",
-    "prestart": "npm install ../build/js/packages/@hitoshura25/mpo-api-search-kmp --install-links"
+    "mock-server": "node tests/mocks/start-mock-server.js",
+    "start:mock": "concurrently \"npm run mock-server\" \"npm run start\""
   },
   "author": "Vinayak Menon",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.21",
+    "concurrently": "^9.1.2",
     "copy-webpack-plugin": "^11.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",

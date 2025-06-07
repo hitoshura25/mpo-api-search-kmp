@@ -2,6 +2,7 @@ package com.vmenon.mpo.search.api.internal
 
 import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
+import co.touchlab.kermit.Logger
 import com.vmenon.mpo.cache.MpoDatabase
 import com.vmenon.mpo.cache.SearchResults.Adapter
 import com.vmenon.mpo.search.api.SearchApiConfiguration
@@ -36,6 +37,9 @@ internal class SearchCacheDataSource(
     }
 
     suspend fun loadSearchResults(keyword: String): String? {
+        Logger.d("SearchCacheDataSource") {
+            "Loading search results for keyword: $keyword"
+        }
         return setupDatabase { database ->
             val now = Clock.System.now()
             val results = database.mpoDatabaseQueries.selectSearchResults(
@@ -46,6 +50,12 @@ internal class SearchCacheDataSource(
                 ),
                 now
             ).awaitAsOneOrNull()
+            if (results != null) {
+                Logger.d("SearchCacheDataSource") {
+                    "Loaded search results for keyword: ${results.keyword}"
+                }
+            }
+
             results?.results
         }
     }
@@ -57,6 +67,9 @@ internal class SearchCacheDataSource(
                 results,
                 Clock.System.now()
             )
+            Logger.d("SearchCacheDataSource") {
+                "Saved search results for keyword: $keyword"
+            }
         }
     }
 }

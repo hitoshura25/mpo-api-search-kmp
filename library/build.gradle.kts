@@ -73,6 +73,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.sqldelight.runtime)
             implementation(libs.koin.core)
+            implementation(libs.kermit)
         }
 
         commonTest.dependencies {
@@ -109,17 +110,17 @@ kotlin {
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
             implementation(libs.sqldelight.js.driver)
-            implementation(npm("sql.js", "1.8.0"))
-            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
-            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+            implementation(npm("sql.js", libs.versions.sqljs.get()))
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqlDelight.get()))
+            implementation(devNpm("copy-webpack-plugin", libs.versions.copyWebpackPlugin.get()))
         }
 
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
             implementation(libs.sqldelight.js.driver)
-            implementation(npm("sql.js", "1.6.2"))
-            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
-            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+            implementation(npm("sql.js", libs.versions.sqljs.get()))
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqlDelight.get()))
+            implementation(devNpm("copy-webpack-plugin", libs.versions.copyWebpackPlugin.get()))
         }
     }
 }
