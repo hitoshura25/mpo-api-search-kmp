@@ -1,6 +1,6 @@
 package com.vmenon.mpo.search.api.internal
 
-object MockResponses {
+internal object MockResponses {
     val SEARCH_RESPONSE = """
 {
   "resultCount": 1,

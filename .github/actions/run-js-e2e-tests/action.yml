@@ -14,7 +14,7 @@ runs:
     - name: Install dependencies
       working-directory: e2e
       shell: bash
-      run: npm ci
+      run: npm ci --install-links
 
     - name: Install Playwright Browsers
       working-directory: e2e
