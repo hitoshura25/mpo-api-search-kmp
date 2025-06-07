@@ -10,6 +10,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.utils.io.ByteReadChannel
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
@@ -17,32 +18,39 @@ import org.koin.core.Koin
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 
-class SearchUseCaseTest : KoinTest {
+internal class SearchUseCaseTest : KoinTest {
+    private val testDriverFactory = TestSqlDriverFactoryWrapper()
+    private val modules = listOf(
+        module {
+            single<HttpClientEngine> {
+                MockEngine { request ->
+                    respond(
+                        content = ByteReadChannel(MockResponses.SEARCH_RESPONSE),
+                        status = HttpStatusCode.OK,
+                        headers = headersOf(HttpHeaders.ContentType, "application/json")
+                    )
+                }
+            }
+            single<SearchApiConfiguration> {
+                SearchApiConfiguration(baseUrl = "http://localhost:8080", cacheTimeMilliseconds = 5 * 60 * 1000)
+            }
+            single<SqlDriverFactory> {
+                testDriverFactory
+            }
+        }
+    )
+
     override fun getKoin(): Koin = IsolatedKoinContext.koin
 
     @BeforeTest
     fun setup() {
-        getKoin().loadModules(
-            listOf(
-                module {
-                    single<HttpClientEngine> {
-                        MockEngine { request ->
-                            respond(
-                                content = ByteReadChannel(MockResponses.SEARCH_RESPONSE),
-                                status = HttpStatusCode.OK,
-                                headers = headersOf(HttpHeaders.ContentType, "application/json")
-                            )
-                        }
-                    }
-                    single<SearchApiConfiguration> {
-                        SearchApiConfiguration(baseUrl = "http://localhost:8080", cacheTimeMilliseconds = 5 * 60 * 1000)
-                    }
-                    single<SqlDriverFactory> {
-                        createTestSqlDriverFactory()
-                    }
-                }
-            )
-        )
+        getKoin().loadModules(modules)
+    }
+
+    @AfterTest
+    fun tearDown() {
+        testDriverFactory.close()
+        getKoin().unloadModules(modules)
     }
 
     @Test

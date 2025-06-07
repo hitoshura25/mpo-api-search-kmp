@@ -13,7 +13,8 @@ import kotlinx.datetime.minus
 
 internal class SearchCacheDataSource(
     private val databaseDriverFactory: SqlDriverFactory,
-    private val configuration: SearchApiConfiguration
+    private val configuration: SearchApiConfiguration,
+    private val clock: Clock = Clock.System,
 ) {
     private val searchResultsAdapter = object : ColumnAdapter<Instant, Long> {
         override fun decode(databaseValue: Long): Instant {
@@ -41,7 +42,7 @@ internal class SearchCacheDataSource(
             "Loading search results for keyword: $keyword"
         }
         return setupDatabase { database ->
-            val now = Clock.System.now()
+            val now = clock.now()
             val results = database.mpoDatabaseQueries.selectSearchResults(
                 keyword,
                 now.minus(
@@ -65,7 +66,7 @@ internal class SearchCacheDataSource(
             database.mpoDatabaseQueries.insertSearchResults(
                 keyword,
                 results,
-                Clock.System.now()
+                clock.now()
             )
             Logger.d("SearchCacheDataSource") {
                 "Saved search results for keyword: $keyword"
