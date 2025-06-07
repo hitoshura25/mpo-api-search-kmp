@@ -1,5 +1,6 @@
 package com.vmenon.mpo.search.api.internal
 
+import app.cash.sqldelight.async.coroutines.awaitCreate
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
@@ -14,7 +15,7 @@ class WebWorkerSqlDriverFactory : SqlDriverFactory {
             Worker(
                 js("""new URL("@cashapp/sqldelight-sqljs-worker/sqljs.worker.js", import.meta.url)""")
             )
-        ).also { schema.create(it).await() }
+        ).also { schema.awaitCreate(it) }
     }
 }
 

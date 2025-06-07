@@ -8,7 +8,7 @@
     "test:e2e": "playwright test",
     "test:e2e-ui": "playwright test --ui",
     "start": "webpack serve --mode development",
-    "prestart": "npm link ../build/js/packages/@hitoshura25/mpo-api-search-kmp"
+    "prestart": "npm install ../build/js/packages/@hitoshura25/mpo-api-search-kmp --install-links"
   },
   "author": "Vinayak Menon",
   "license": "ISC",
@@ -25,5 +25,8 @@
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.11.1"
+  },
+  "dependencies": {
+    "@hitoshura25/mpo-api-search-kmp": "file:../build/js/packages/@hitoshura25/mpo-api-search-kmp"
   }
 }

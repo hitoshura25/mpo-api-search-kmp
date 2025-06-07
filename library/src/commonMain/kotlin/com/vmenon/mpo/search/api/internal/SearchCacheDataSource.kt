@@ -1,6 +1,7 @@
 package com.vmenon.mpo.search.api.internal
 
 import app.cash.sqldelight.ColumnAdapter
+import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import com.vmenon.mpo.cache.MpoDatabase
 import com.vmenon.mpo.cache.SearchResults.Adapter
 import com.vmenon.mpo.search.api.SearchApiConfiguration
@@ -44,7 +45,7 @@ internal class SearchCacheDataSource(
                     DateTimeUnit.MILLISECOND
                 ),
                 now
-            ).executeAsOneOrNull()?.results
+            ).awaitAsOneOrNull()?.results
         }
     }
 

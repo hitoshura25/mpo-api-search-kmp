@@ -19,7 +19,12 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
-    modules: [path.resolve(__dirname, 'node_modules')]
+    modules: [path.resolve(__dirname, 'node_modules')],
+    fallback: {
+        "fs": false,
+        "path": false,
+        "crypto": false,
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -27,7 +32,15 @@ module.exports = {
       filename: 'index.html',
       chunks: ['main']
     }),
+    new CopyWebpackPlugin({
+      patterns: [
+        'node_modules/sql.js/dist/sql-wasm.wasm'
+      ],
+    }),
   ],
+  experiments: {
+    asyncWebAssembly: true
+  },
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
