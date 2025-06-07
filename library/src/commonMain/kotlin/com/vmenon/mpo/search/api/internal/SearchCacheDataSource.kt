@@ -38,14 +38,15 @@ internal class SearchCacheDataSource(
     suspend fun loadSearchResults(keyword: String): String? {
         return setupDatabase { database ->
             val now = Clock.System.now()
-            database.mpoDatabaseQueries.selectSearchResults(
+            val results = database.mpoDatabaseQueries.selectSearchResults(
                 keyword,
                 now.minus(
                     configuration.cacheTimeMilliseconds,
                     DateTimeUnit.MILLISECOND
                 ),
                 now
-            ).awaitAsOneOrNull()?.results
+            ).awaitAsOneOrNull()
+            results?.results
         }
     }
 
@@ -53,7 +54,8 @@ internal class SearchCacheDataSource(
         setupDatabase { database ->
             database.mpoDatabaseQueries.insertSearchResults(
                 keyword,
-                results
+                results,
+                Clock.System.now()
             )
         }
     }
