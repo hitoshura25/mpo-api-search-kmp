@@ -1,0 +1,19 @@
+import kotlinx.datetime.Instant;
+
+CREATE TABLE SearchResults (
+    keyword TEXT NOT NULL,
+    results TEXT NOT NULL,
+    created_at INTEGER AS Instant NOT NULL DEFAULT (strftime('%s', 'now'))
+);
+
+insertSearchResults:
+INSERT INTO SearchResults(keyword, results)
+VALUES(?, ?);
+
+removeAllSearchResults:
+DELETE FROM SearchResults;
+
+selectSearchResults:
+SELECT SearchResults.*
+FROM SearchResults
+WHERE keyword = :keyword AND created_at BETWEEN :startTime AND :endTime;

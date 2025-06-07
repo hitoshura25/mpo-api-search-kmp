@@ -2,6 +2,8 @@ import com.vmenon.mpo.search.api.SearchApiConfiguration
 import com.vmenon.mpo.search.api.SearchResult
 import com.vmenon.mpo.search.api.internal.IsolatedKoinContext
 import com.vmenon.mpo.search.api.internal.SearchUseCase
+import com.vmenon.mpo.search.api.internal.SqlDriverFactory
+import com.vmenon.mpo.search.api.internal.WebWorkerSqlDriverFactory
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.js.JsClient
 import kotlin.js.Promise
@@ -20,6 +22,7 @@ class SearchApiJs(configuration: SearchApiConfiguration) {
                 module {
                     single<HttpClientEngine> { JsClient().create { } }
                     single<SearchApiConfiguration> { configuration }
+                    single<SqlDriverFactory> { WebWorkerSqlDriverFactory() }
                 }
             ))
     }

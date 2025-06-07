@@ -5,4 +5,4 @@ import kotlin.js.JsExport
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-data class SearchApiConfiguration(val baseUrl: String)
+data class SearchApiConfiguration(val baseUrl: String, val cacheTimeMilliseconds: Int)
