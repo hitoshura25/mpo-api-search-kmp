@@ -71,6 +71,6 @@ class SearchUseCaseTest : KoinTest {
         result shouldBe listOf(expectedResult)
 
         val cachedResult = searchUseCase.search("test")
-        result shouldBe listOf(expectedResult)
+        cachedResult shouldBe listOf(expectedResult)
     }
 }
