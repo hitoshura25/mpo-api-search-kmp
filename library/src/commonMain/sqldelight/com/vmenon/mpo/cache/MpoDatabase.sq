@@ -13,6 +13,11 @@ VALUES(?, ?, ?);
 removeAllSearchResults:
 DELETE FROM SearchResults;
 
+deleteExpiredResults:
+DELETE FROM SearchResults
+WHERE created_at < ?;
+SELECT changes();
+
 selectSearchResults:
 SELECT SearchResults.*
 FROM SearchResults

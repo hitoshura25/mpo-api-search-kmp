@@ -63,6 +63,13 @@ internal class SearchCacheDataSource(
 
     suspend fun saveSearchResults(keyword: String, results: String) {
         setupDatabase { database ->
+            val expirationThreshold = clock.now().minus(
+                configuration.cacheTimeMilliseconds,
+                DateTimeUnit.MILLISECOND
+            )
+            val deletedCount = database.mpoDatabaseQueries.deleteExpiredResults(expirationThreshold) ?: 0
+            Logger.d("SearchCacheDataSource") { "Cleaned up $deletedCount expired search results" }
+
             database.mpoDatabaseQueries.insertSearchResults(
                 keyword,
                 results,
