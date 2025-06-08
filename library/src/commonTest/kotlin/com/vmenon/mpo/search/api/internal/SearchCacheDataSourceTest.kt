@@ -75,4 +75,25 @@ internal class SearchCacheDataSourceTest {
         dataSource.loadSearchResults(expiredKeyword) shouldBe null
         dataSource.loadSearchResults(freshKeyword) shouldBe freshResults
     }
+
+    @Test
+    fun `test cleanup expired details`() = runTest {
+        val dataSource = SearchCacheDataSource(
+            databaseDriverFactory = testDriverFactory,
+            configuration = configuration,
+            clock = testClock
+        )
+
+        val expiredFeedUrl = "http://example.com/expired"
+        val freshFeedUrl = "http://example.com/fresh"
+        val expiredDetails = """{"details": "expired details"}"""
+        val freshDetails = """{"details": "fresh details"}"""
+
+        dataSource.saveDetails(expiredFeedUrl, expiredDetails)
+        currentTime = currentTime.plus(600.milliseconds) // Advance time past expiration
+        dataSource.saveDetails(freshFeedUrl, freshDetails)
+
+        dataSource.loadDetails(expiredFeedUrl) shouldBe null
+        dataSource.loadDetails(freshFeedUrl) shouldBe freshDetails
+    }
 }

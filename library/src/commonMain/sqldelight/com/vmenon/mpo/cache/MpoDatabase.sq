@@ -22,3 +22,22 @@ selectSearchResults:
 SELECT SearchResults.*
 FROM SearchResults
 WHERE keyword = :keyword AND created_at BETWEEN :startTime AND :endTime;
+
+CREATE TABLE SearchDetails (
+    feedUrl TEXT NOT NULL PRIMARY KEY,
+    details TEXT NOT NULL,
+    created_at INTEGER AS Instant NOT NULL
+);
+
+selectDetails:
+SELECT SearchDetails.* FROM SearchDetails
+WHERE feedUrl = ? AND created_at BETWEEN :startTime AND :endTime;
+
+insertDetails:
+INSERT OR REPLACE INTO SearchDetails (feedUrl, details, created_at)
+VALUES (?, ?, ?);
+
+deleteExpiredDetails:
+DELETE FROM SearchDetails
+WHERE created_at < ?;
+SELECT changes();

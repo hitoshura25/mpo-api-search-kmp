@@ -26,4 +26,10 @@ internal class SearchApiDataSource(clientEngine: HttpClientEngine, private val c
             parameter("term", keyword)
         }.body()
     }
+
+    suspend fun details(feedUrl: String): String {
+        return httpClient.get("${configuration.baseUrl}/details") {
+            parameter("feed", feedUrl)
+        }.body()
+    }
 }
