@@ -20,4 +20,30 @@ internal object MockResponses {
   ]
 }
     """.trimIndent()
+
+    val DETAILS_RESPONSE = """
+{
+    "name": "Test Podcast",
+    "description": "Test Description",
+    "imageUrl": "https://example.com/default.jpg",
+    "episodes": [
+      {
+        "name": "Minimal Episode",
+        "description": "This is a minimal episode description.",
+        "published": "2025-03-22T01:02:00",
+        "downloadUrl": "https://example.com/episode2.mp3",
+        "artworkUrl": "https://example.com/default.jpg",
+        "durationInSeconds": 3600,
+        "type": "audio/mp3"
+      }
+    ],
+    "pagination": {
+        "total": 4,
+        "limit": 1,
+        "offset": 1,
+        "next_page": "/details/?feed_url=https://rss.pdrl.fm/817ebc/feeds.megaphone.fm/gamescoop&episode_limit=1&episode_offset=2",
+        "previous_page": "/details/?feed_url=https://rss.pdrl.fm/817ebc/feeds.megaphone.fm/gamescoop&episode_limit=1&episode_offset=0"
+      }
+  }
+""".trimIndent()
 }

@@ -84,7 +84,7 @@ internal class SearchCacheDataSource(
         }
     }
 
-    suspend fun loadDetails(feedUrl: String): String? {
+    suspend fun loadDetails(feedUrl: String, episodesOffset: Long, episodesLimit: Long): String? {
         Logger.d("SearchCacheDataSource") {
             "Loading details for feed URL: $feedUrl"
         }
@@ -92,6 +92,8 @@ internal class SearchCacheDataSource(
             val now = clock.now()
             val details = database.mpoDatabaseQueries.selectDetails(
                 feedUrl,
+                episodesOffset,
+                episodesLimit,
                 now.minus(
                     configuration.cacheTimeMilliseconds,
                     DateTimeUnit.MILLISECOND
@@ -108,7 +110,7 @@ internal class SearchCacheDataSource(
         }
     }
 
-    suspend fun saveDetails(feedUrl: String, details: String) {
+    suspend fun saveDetails(feedUrl: String, episodesOffset: Long, episodesLimit: Long, details: String) {
         setupDatabase { database ->
             val expirationThreshold = clock.now().minus(
                 configuration.cacheTimeMilliseconds,
@@ -119,6 +121,8 @@ internal class SearchCacheDataSource(
 
             database.mpoDatabaseQueries.insertDetails(
                 feedUrl,
+                episodesOffset,
+                episodesLimit,
                 details,
                 clock.now()
             )

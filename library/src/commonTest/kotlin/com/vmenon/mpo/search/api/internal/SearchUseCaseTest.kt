@@ -1,7 +1,10 @@
 package com.vmenon.mpo.search.api.internal
 
+import com.vmenon.mpo.search.api.Episode
 import com.vmenon.mpo.search.api.SearchApiConfiguration
 import com.vmenon.mpo.search.api.SearchResult
+import com.vmenon.mpo.search.api.SearchResultDetails
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.mock.MockEngine
@@ -24,11 +27,22 @@ internal class SearchUseCaseTest : KoinTest {
         module {
             single<HttpClientEngine> {
                 MockEngine { request ->
-                    respond(
-                        content = ByteReadChannel(MockResponses.SEARCH_RESPONSE),
-                        status = HttpStatusCode.OK,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json")
-                    )
+                    when (request.url.encodedPath) {
+                        "/search" -> respond(
+                            content = ByteReadChannel(MockResponses.SEARCH_RESPONSE),
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                        )
+
+                        "/details" -> respond(
+                            content = ByteReadChannel(MockResponses.DETAILS_RESPONSE),
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                        )
+
+                        else -> error("Unhandled request: ${request.url}")
+                    }
+
                 }
             }
             single<SearchApiConfiguration> {
@@ -56,8 +70,9 @@ internal class SearchUseCaseTest : KoinTest {
     @Test
     fun `search returns empty list when query is empty`() = runTest {
         val searchUseCase = SearchUseCase()
-        val result = searchUseCase.search("")
-        result shouldBe emptyList()
+        shouldThrow<IllegalArgumentException> {
+            searchUseCase.search("")
+        }
     }
 
     @Test
@@ -80,5 +95,51 @@ internal class SearchUseCaseTest : KoinTest {
 
         val cachedResult = searchUseCase.search("test")
         cachedResult shouldBe listOf(expectedResult)
+    }
+
+    @Test
+    fun `details throws exception when feedUrl is blank`() = runTest {
+        val searchUseCase = SearchUseCase()
+        shouldThrow<IllegalArgumentException> {
+            searchUseCase.details("", 0, 10)
+        }
+    }
+
+    @Test
+    fun `details throws exception when episodesOffset is negative`() = runTest {
+        val searchUseCase = SearchUseCase()
+        shouldThrow<IllegalArgumentException> {
+            searchUseCase.details("http://example.com/feed", -1, 10)
+        }
+    }
+
+    @Test
+    fun `details throws exception when episodesLimit is not positive`() = runTest {
+        val searchUseCase = SearchUseCase()
+        shouldThrow<IllegalArgumentException> {
+            searchUseCase.details("http://example.com/feed", 0, 0)
+        }
+    }
+
+    @Test
+    fun `details returns list of search results`() = runTest {
+        val searchUseCase = SearchUseCase()
+        val result = searchUseCase.details("http://example.com/feed", 0, 10)
+        result shouldBe SearchResultDetails(
+            name = "Test Podcast",
+            description = "Test Description",
+            imageUrl = "https://example.com/default.jpg",
+            episodes = listOf(
+                Episode(
+                    name = "Minimal Episode",
+                    published = "2025-03-22T01:02:00",
+                    downloadUrl = "https://example.com/episode2.mp3",
+                    artworkUrl = "https://example.com/default.jpg",
+                    description = "This is a minimal episode description.",
+                    type = "audio/mp3",
+                    durationInSeconds = 3600.toDouble()
+                )
+            )
+        )
     }
 }

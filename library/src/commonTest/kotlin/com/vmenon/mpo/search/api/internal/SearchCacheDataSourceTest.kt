@@ -89,11 +89,11 @@ internal class SearchCacheDataSourceTest {
         val expiredDetails = """{"details": "expired details"}"""
         val freshDetails = """{"details": "fresh details"}"""
 
-        dataSource.saveDetails(expiredFeedUrl, expiredDetails)
+        dataSource.saveDetails(expiredFeedUrl, 0, 10, expiredDetails)
         currentTime = currentTime.plus(600.milliseconds) // Advance time past expiration
-        dataSource.saveDetails(freshFeedUrl, freshDetails)
+        dataSource.saveDetails(freshFeedUrl, 0, 10, freshDetails)
 
-        dataSource.loadDetails(expiredFeedUrl) shouldBe null
-        dataSource.loadDetails(freshFeedUrl) shouldBe freshDetails
+        dataSource.loadDetails(expiredFeedUrl, 0, 10) shouldBe null
+        dataSource.loadDetails(freshFeedUrl, 0, 10) shouldBe freshDetails
     }
 }
