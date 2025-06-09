@@ -5,12 +5,6 @@ import com.vmenon.mpo.search.api.SearchResult
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
-import io.ktor.utils.io.ByteReadChannel
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -23,20 +17,7 @@ internal class SearchUseCaseTest : KoinTest {
     private val testDriverFactory = TestSqlDriverFactoryWrapper()
     private val modules = listOf(
         module {
-            single<HttpClientEngine> {
-                MockEngine { request ->
-                    when (request.url.encodedPath) {
-                        "/search" -> respond(
-                            content = ByteReadChannel(MockResponses.SEARCH_RESPONSE),
-                            status = HttpStatusCode.OK,
-                            headers = headersOf(HttpHeaders.ContentType, "application/json")
-                        )
-
-                        else -> error("Unhandled request: ${request.url}")
-                    }
-
-                }
-            }
+            single<HttpClientEngine> { mockEngine }
             single<SearchApiConfiguration> {
                 SearchApiConfiguration(baseUrl = "http://localhost:8080", cacheTimeMilliseconds = 5 * 60 * 1000)
             }

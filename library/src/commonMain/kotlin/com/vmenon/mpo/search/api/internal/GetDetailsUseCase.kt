@@ -3,7 +3,7 @@ package com.vmenon.mpo.search.api.internal
 import co.touchlab.kermit.Logger
 import com.vmenon.mpo.search.api.SearchResultDetails
 
-class GetDetailsUseCase {
+internal class GetDetailsUseCase {
     private val repository: SearchRepository = IsolatedKoinContext.koinApp.koin.get()
 
     suspend fun details(feedUrl: String, episodesOffset: Long, episodesLimit: Long): SearchResultDetails {
@@ -19,7 +19,7 @@ class GetDetailsUseCase {
             throw IllegalArgumentException("Episodes limit is not positive: $episodesLimit")
         }
 
-        Logger.d("SearchUseCase") {
+        Logger.d("GetDetailsUseCase") {
             "Fetching details for feedUrl: $feedUrl, offset: $episodesOffset, limit: $episodesLimit"
         }
         return repository.getShowDetails(feedUrl, episodesOffset, episodesLimit)
