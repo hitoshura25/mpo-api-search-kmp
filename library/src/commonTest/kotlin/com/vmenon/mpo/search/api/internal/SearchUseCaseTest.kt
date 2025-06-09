@@ -88,6 +88,4 @@ internal class SearchUseCaseTest : KoinTest {
         val cachedResult = searchUseCase.search("test")
         cachedResult shouldBe listOf(expectedResult)
     }
-
-
 }

@@ -1,5 +1,7 @@
 import com.vmenon.mpo.search.api.SearchApiConfiguration
 import com.vmenon.mpo.search.api.SearchResult
+import com.vmenon.mpo.search.api.SearchResultDetails
+import com.vmenon.mpo.search.api.internal.GetDetailsUseCase
 import com.vmenon.mpo.search.api.internal.IsolatedKoinContext
 import com.vmenon.mpo.search.api.internal.SearchUseCase
 import com.vmenon.mpo.search.api.internal.SqlDriverFactory
@@ -46,11 +48,17 @@ class SearchApiJs(configuration: SearchApiConfiguration) {
         }
     }
 
-    fun getPodcastDetails(feedUrl: String, episodesOffset: Int, episodesLimit: Int): Promise<SearchResult> {
+    @OptIn(DelicateCoroutinesApi::class)
+    @JsName("podcastDetails")
+    fun getPodcastDetails(feedUrl: String, episodesOffset: Int, episodesLimit: Int): Promise<SearchResultDetails> {
         return Promise { resolve, reject ->
             GlobalScope.launch {
                 try {
-                    val result = SearchUseCase().getPodcastDetails(feedUrl)
+                    val result = GetDetailsUseCase().details(
+                        feedUrl,
+                        episodesOffset.toLong(),
+                        episodesLimit.toLong()
+                    )
                     resolve(result)
                 } catch (e: Exception) {
                     reject(e)

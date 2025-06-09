@@ -9,10 +9,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Episode(
     val name: String,
-    val description: String?,
-    val published: String?,
-    val type: String?,
-    val downloadUrl: String?,
-    val durationInSeconds: Double?,
-    val artworkUrl: String?
+    val description: String? = null,
+    val published: String? = null,
+    val type: String? = null,
+    val downloadUrl: String? = null,
+    val durationInSeconds: Double? = null,
+    val artworkUrl: String? = null,
 )
