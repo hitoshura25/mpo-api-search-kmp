@@ -8,7 +8,7 @@ internal class SearchUseCase {
 
     suspend fun search(query: String): List<SearchResult> {
         if (query.isBlank()) {
-            return emptyList()
+            throw IllegalArgumentException("Query cannot be blank")
         }
         Logger.d("SearchUseCase") {
             "Searching for shows with query: $query"

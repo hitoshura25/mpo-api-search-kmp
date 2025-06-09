@@ -13,7 +13,34 @@ VALUES(?, ?, ?);
 removeAllSearchResults:
 DELETE FROM SearchResults;
 
+deleteExpiredResults:
+DELETE FROM SearchResults
+WHERE created_at < ?;
+SELECT changes();
+
 selectSearchResults:
 SELECT SearchResults.*
 FROM SearchResults
 WHERE keyword = :keyword AND created_at BETWEEN :startTime AND :endTime;
+
+CREATE TABLE SearchDetails (
+    feedUrl TEXT NOT NULL,
+    details TEXT NOT NULL,
+    created_at INTEGER AS Instant NOT NULL,
+    episodes_offset INTEGER NOT NULL,
+    episodes_limit INTEGER NOT NULL,
+    PRIMARY KEY (feedUrl, episodes_offset, episodes_limit)
+);
+
+selectDetails:
+SELECT SearchDetails.* FROM SearchDetails
+WHERE feedUrl = ? AND episodes_offset = ? AND episodes_limit = ? AND created_at BETWEEN :startTime AND :endTime;
+
+insertDetails:
+INSERT OR REPLACE INTO SearchDetails (feedUrl, episodes_offset, episodes_limit, details, created_at)
+VALUES (?, ?, ?, ?, ?);
+
+deleteExpiredDetails:
+DELETE FROM SearchDetails
+WHERE created_at < ?;
+SELECT changes();

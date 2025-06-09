@@ -30,6 +30,34 @@ export async function setupMockServer(config) {
      );
   });
 
+  app.get('/details', (req, res) => {
+    res.json(
+      {
+        name: "Test Podcast",
+        description: "Test Description",
+        imageUrl: "https://example.com/default.jpg",
+        episodes: [
+          {
+            "name": "Complete Episode",
+            "description": "Full description",
+            "published": "2025-06-08T15:30:00",
+            "downloadUrl": "https://example.com/episode1.mp3",
+            "artworkUrl": "https://example.com/thumb1.jpg",
+            "durationInSeconds": "5445",
+            "type": "audio/mpeg"
+          }
+        ],
+        pagination: {
+            total: 4,
+            limit: 1,
+            offset: 1,
+            next_page: "/details/?feed_url=https://rss.pdrl.fm/817ebc/feeds.megaphone.fm/gamescoop&episode_limit=1&episode_offset=2",
+            previous_page: "/details/?feed_url=https://rss.pdrl.fm/817ebc/feeds.megaphone.fm/gamescoop&episode_limit=1&episode_offset=0"
+          }
+      }
+     );
+  });
+
   const server = app.listen(config.port || 0, () => {
     console.log(`Mock search server listening on port ${server.address().port}`);
   });

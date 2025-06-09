@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @JsExport
 data class SearchResult(
     val name: String,
-    val artworkUrl: String?,
+    val artworkUrl: String? = null,
     val genres: List<String>,
     val author: String,
     val feedUrl: String,

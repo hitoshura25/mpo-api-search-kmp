@@ -4,7 +4,8 @@ import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import co.touchlab.kermit.Logger
 import com.vmenon.mpo.cache.MpoDatabase
-import com.vmenon.mpo.cache.SearchResults.Adapter
+import com.vmenon.mpo.cache.SearchDetails
+import com.vmenon.mpo.cache.SearchResults
 import com.vmenon.mpo.search.api.SearchApiConfiguration
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -16,7 +17,8 @@ internal class SearchCacheDataSource(
     private val configuration: SearchApiConfiguration,
     private val clock: Clock = Clock.System,
 ) {
-    private val searchResultsAdapter = object : ColumnAdapter<Instant, Long> {
+
+    private val createdAtAdapter = object : ColumnAdapter<Instant, Long> {
         override fun decode(databaseValue: Long): Instant {
             return Instant.fromEpochMilliseconds(databaseValue)
         }
@@ -31,7 +33,8 @@ internal class SearchCacheDataSource(
         val db = database ?: run {
             MpoDatabase(
                 databaseDriverFactory.provideDbDriver(MpoDatabase.Schema),
-                Adapter(created_atAdapter = searchResultsAdapter)
+                SearchDetails.Adapter(created_atAdapter = createdAtAdapter),
+                SearchResults.Adapter(created_atAdapter = createdAtAdapter)
             ).also { database = it }
         }
         return block(db)
@@ -63,6 +66,13 @@ internal class SearchCacheDataSource(
 
     suspend fun saveSearchResults(keyword: String, results: String) {
         setupDatabase { database ->
+            val expirationThreshold = clock.now().minus(
+                configuration.cacheTimeMilliseconds,
+                DateTimeUnit.MILLISECOND
+            )
+            val deletedCount = database.mpoDatabaseQueries.deleteExpiredResults(expirationThreshold)
+            Logger.d("SearchCacheDataSource") { "Cleaned up $deletedCount expired search results" }
+
             database.mpoDatabaseQueries.insertSearchResults(
                 keyword,
                 results,
@@ -70,6 +80,54 @@ internal class SearchCacheDataSource(
             )
             Logger.d("SearchCacheDataSource") {
                 "Saved search results for keyword: $keyword"
+            }
+        }
+    }
+
+    suspend fun loadDetails(feedUrl: String, episodesOffset: Long, episodesLimit: Long): String? {
+        Logger.d("SearchCacheDataSource") {
+            "Loading details for feed URL: $feedUrl"
+        }
+        return setupDatabase { database ->
+            val now = clock.now()
+            val details = database.mpoDatabaseQueries.selectDetails(
+                feedUrl,
+                episodesOffset,
+                episodesLimit,
+                now.minus(
+                    configuration.cacheTimeMilliseconds,
+                    DateTimeUnit.MILLISECOND
+                ),
+                now
+            ).awaitAsOneOrNull()
+            if (details != null) {
+                Logger.d("SearchCacheDataSource") {
+                    "Loaded details for feed URL: ${details.feedUrl}"
+                }
+            }
+
+            details?.details
+        }
+    }
+
+    suspend fun saveDetails(feedUrl: String, episodesOffset: Long, episodesLimit: Long, details: String) {
+        setupDatabase { database ->
+            val expirationThreshold = clock.now().minus(
+                configuration.cacheTimeMilliseconds,
+                DateTimeUnit.MILLISECOND
+            )
+            val deletedCount = database.mpoDatabaseQueries.deleteExpiredDetails(expirationThreshold)
+            Logger.d("SearchCacheDataSource") { "Cleaned up $deletedCount expired details" }
+
+            database.mpoDatabaseQueries.insertDetails(
+                feedUrl,
+                episodesOffset,
+                episodesLimit,
+                details,
+                clock.now()
+            )
+            Logger.d("SearchCacheDataSource") {
+                "Saved details for feed URL: $feedUrl"
             }
         }
     }

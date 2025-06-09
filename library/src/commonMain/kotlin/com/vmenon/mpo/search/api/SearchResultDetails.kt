@@ -9,5 +9,7 @@ import kotlinx.serialization.Serializable
 @JsExport
 data class SearchResultDetails(
     val episodes: List<Episode>,
-    val subscribed: Boolean
+    val name: String,
+    val description: String,
+    val imageUrl: String
 )
