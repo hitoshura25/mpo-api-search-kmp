@@ -45,4 +45,17 @@ class SearchApiJs(configuration: SearchApiConfiguration) {
             }
         }
     }
+
+    fun getPodcastDetails(feedUrl: String, episodesOffset: Int, episodesLimit: Int): Promise<SearchResult> {
+        return Promise { resolve, reject ->
+            GlobalScope.launch {
+                try {
+                    val result = SearchUseCase().getPodcastDetails(feedUrl)
+                    resolve(result)
+                } catch (e: Exception) {
+                    reject(e)
+                }
+            }
+        }
+    }
 }
