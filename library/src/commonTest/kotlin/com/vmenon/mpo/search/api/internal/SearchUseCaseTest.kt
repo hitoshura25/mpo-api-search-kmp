@@ -68,7 +68,7 @@ internal class SearchUseCaseTest : KoinTest {
     }
 
     @Test
-    fun `search returns empty list when query is empty`() = runTest {
+    fun `search throws exception when query is empty`() = runTest {
         val searchUseCase = SearchUseCase()
         shouldThrow<IllegalArgumentException> {
             searchUseCase.search("")
@@ -76,7 +76,7 @@ internal class SearchUseCaseTest : KoinTest {
     }
 
     @Test
-    fun `search returns empty list when query is not empty`() = runTest() {
+    fun `search returns list when query is not empty and cached result on second call`() = runTest() {
         val expectedResult = SearchResult(
             name = "Game Scoop!",
             artworkUrl = "https://is1-ssl.mzstatic.com/image/thumb/Features4/v4/d6/d5/98/d6d59873-2ee5-1f88-1e9d-224cc4a67b53/mza_1229187100463163224.jpg/600x600bb.jpg",
@@ -122,10 +122,9 @@ internal class SearchUseCaseTest : KoinTest {
     }
 
     @Test
-    fun `details returns list of search results`() = runTest {
+    fun `details returns list of search results and cached result on second call`() = runTest {
         val searchUseCase = SearchUseCase()
-        val result = searchUseCase.details("http://example.com/feed", 0, 10)
-        result shouldBe SearchResultDetails(
+        val expected = SearchResultDetails(
             name = "Test Podcast",
             description = "Test Description",
             imageUrl = "https://example.com/default.jpg",
@@ -141,5 +140,10 @@ internal class SearchUseCaseTest : KoinTest {
                 )
             )
         )
+        var result = searchUseCase.details("http://example.com/feed", 0, 10)
+        result shouldBe expected
+
+        result = searchUseCase.details("http://example.com/feed", 0, 10)
+        result shouldBe expected
     }
 }
